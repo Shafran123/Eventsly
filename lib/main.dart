@@ -1,6 +1,6 @@
 import 'package:eventsly/CustomShapeClipper.dart';
 import 'package:flutter/material.dart';
-import 'package:eventsly/Screens/LoginNumber.dart';
+import 'package:eventsly/Screens/SignUp.dart';
 
 void main() => runApp(MaterialApp(
       title: 'Eventsly',
@@ -178,7 +178,7 @@ class _HBTState extends State<HBT> {
                     onPressed: () {
                       // Perform some action
                       Navigator.push(context, MaterialPageRoute(builder: (context){
-                        return LoginNumber();
+                        return SignUp();
                       }));
                     },
                     shape: new RoundedRectangleBorder(
