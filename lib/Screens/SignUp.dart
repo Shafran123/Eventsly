@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:eventsly/Screens/SignUpVerify.dart';
+import 'package:eventsly/Screens/PinPutTest.dart';
 
 void main() => runApp(MaterialApp(
       title: 'Eventsly',
@@ -29,6 +31,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       children: <Widget>[
         AppBar(
           title: Text("Sign Up Eventsly"),
+          
         ),
         Center(
           child: SizedBox(
@@ -146,6 +149,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             splashColor: Colors.blueGrey,
                             onPressed: () {
                               // Perform some action
+                              Navigator.push(context, MaterialPageRoute(builder: (context){
+                              return SignUpVerify();
+                              }));
                             },
                             shape: new RoundedRectangleBorder(
                                 borderRadius: new BorderRadius.circular(30.0)),
