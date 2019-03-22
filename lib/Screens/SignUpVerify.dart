@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:eventsly/Screens/Home.dart';
+import 'package:eventsly/Screens/TestFirebase.dart';
 import 'package:eventsly/ShapeClipper.dart';
 import 'package:pin_entry_text_field/pin_entry_text_field.dart';
 
@@ -156,7 +156,7 @@ class _VerifyScreenBottomState extends State<VerifyScreenBottom> {
               splashColor: Colors.blueGrey,
               onPressed: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context){
-                return Home();
+                return HomeTest();
                               }));
               },
             ),

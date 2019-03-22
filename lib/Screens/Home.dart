@@ -30,9 +30,12 @@ class Home extends StatelessWidget {
            )
          ],
        ),
+       
         body: Column(
       children: <Widget>[
+        
         HomeScreenTop(),
+       HomeScreenList()
        
         ],
     ));
@@ -104,6 +107,29 @@ class _HomeScreenTop extends State<HomeScreenTop> {
         ),
       ],
     );
+    
 
+  }
+}
+
+class HomeScreenList extends StatefulWidget {
+  @override
+ _HomeScreenList createState()  => _HomeScreenList();
+  
+}
+
+class _HomeScreenList extends State<HomeScreenList> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child:
+
+          Card(
+            child: Text("data"),
+          )
+     
+  
+    );
+      
   }
 }
