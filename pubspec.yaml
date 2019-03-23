@@ -60,13 +60,22 @@ flutter:
      - family: Cocogoose Pro
        fonts:
          - asset: fonts/Cocogoose Pro Regularl.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
+ #        - asset: fonts/Gotham Ultra.otf
   #         style: italic
      - family: Gotham
        fonts:
          - asset: fonts/Gotham Light.otf
-  #       - asset: fonts/TrajanPro_Bold.ttf
+  #      - asset: fonts/Gotham Ultra.otf
   #         weight: 700
+     - family: Gotham Ultra
+       fonts:
+         - asset: fonts/Gotham Ultra.otf
+     - family: Product Sans
+       fonts:
+         - asset: fonts/Product Sans Bold.ttf
+     - family: Product Sans Re
+       fonts:
+         - asset: fonts/Product Sans Regular.ttf
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.io/custom-fonts/#from-packages
