@@ -78,6 +78,15 @@ class _ListPageState extends State<ListPage> {
     return qn.documents;
   }
 
+  navigateToDetail(DocumentSnapshot post) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => DetailPage(
+                  post: post,
+                )));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -133,7 +142,8 @@ class _ListPageState extends State<ListPage> {
                           ),
 
                           Padding(
-                            padding: const EdgeInsets.only(left: 8.0,bottom: 3.0),
+                            padding:
+                                const EdgeInsets.only(left: 8.0, bottom: 3.0),
                             child: Text(
                               'Orgrazied by : ' +
                                   snapshot.data[index].data['organizer'],
@@ -147,15 +157,14 @@ class _ListPageState extends State<ListPage> {
                                 children: <Widget>[
                                   Container(
                                     child: Padding(
-                                      padding: const EdgeInsets.only(left: 8.0,bottom: 3.0),
+                                      padding: const EdgeInsets.only(
+                                          left: 8.0, bottom: 3.0),
                                       child: Text(
                                         snapshot.data[index].data['title'],
                                         style: TextStyle(
-                                            fontFamily: 'Product Sans',
-                                            fontSize: 25.0,
-                                          
-                                            ),
-                                            
+                                          fontFamily: 'Product Sans',
+                                          fontSize: 25.0,
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -164,35 +173,35 @@ class _ListPageState extends State<ListPage> {
                             ],
                           ),
                           Padding(
-                            padding: const EdgeInsets.only(left: 8.0,bottom: 3.0),
+                            padding:
+                                const EdgeInsets.only(left: 8.0, bottom: 3.0),
                             child: Text(
-                             
-                                  snapshot.data[index].data['short_desc'],
+                              snapshot.data[index].data['short_desc'],
                               style: TextStyle(fontFamily: 'Product Sans Re'),
                             ),
                           ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: ButtonTheme(
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-                                    minWidth: 350.0,
-                                    
-                                    child: RaisedButton(
-                                      child: Text(
-                                        'Rsvp Now !',
-                                        style: TextStyle(
-                                            fontFamily: 'Product Sans',
-                                            fontSize: 20.0,
-                                            color: Colors.white),
-                                      ),
-                                      onPressed: () {},
-                                    ),
-                                  ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: ButtonTheme(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0)),
+                              minWidth: 350.0,
+                              child: RaisedButton(
+                                child: Text(
+                                  'Rsvp Now !',
+                                  style: TextStyle(
+                                      fontFamily: 'Product Sans',
+                                      fontSize: 20.0,
+                                      color: Colors.white),
+                                ),
+                                onPressed: () =>
+                                    navigateToDetail(snapshot.data[index]),
+                              ),
                             ),
+                          ),
                           //Image.file(snapshot.data[index].data['cover_img']),
 
                           // Image.network('https://i.imgur.com/wnwXIim.png')
-                          
                         ],
                       ),
                     ),
@@ -208,6 +217,10 @@ class _ListPageState extends State<ListPage> {
 }
 
 class DetailPage extends StatefulWidget {
+  final DocumentSnapshot post;
+
+  DetailPage({this.post});
+
   @override
   _DetailPageState createState() => _DetailPageState();
 }
@@ -215,6 +228,104 @@ class DetailPage extends StatefulWidget {
 class _DetailPageState extends State<DetailPage> {
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.post.data['title']),
+      ),
+      body: ListView(
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Card(
+                elevation: 2.0,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15.0)),
+                child: Column(
+                  children: <Widget>[
+                    ClipRRect(
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(15.0),
+                          topRight: Radius.circular(15.0)),
+                      child: Image.network(widget.post.data['img']),
+                    ),
+                    Text(
+                      widget.post.data['title'],
+                      style:
+                          TextStyle(fontFamily: 'Product Sans', fontSize: 30.0),
+                    ),
+                    Text('--------------------------------------------------'),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        children: <Widget>[
+                          Icon(Icons.calendar_today),
+                          Text(' '+widget.post.data['Date'], 
+                          style:
+                          TextStyle(fontFamily: 'Product Sans', fontSize: 15.0),)
+                        ],
+                      ),
+                    ),
+                     Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        children: <Widget>[
+                          Icon(Icons.timer),
+                          Text(' '+widget.post.data['start_time'] +' - '+ widget.post.data['end_time'], 
+                          style:
+                          TextStyle(fontFamily: 'Product Sans', fontSize: 15.0),)
+                        ],
+                      ),
+                    ),
+                     Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        children: <Widget>[
+                          Icon(Icons.location_on),
+                          Text(' '+widget.post.data['venue'], 
+                          style:
+                          TextStyle(fontFamily: 'Product Sans', fontSize: 15.0),)
+                        ],
+                      ),
+                    ),
+                     Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        children: <Widget>[
+                          Icon(Icons.warning),
+                          Text(' '+widget.post.data['organizer'], 
+                          style:
+                          TextStyle(fontFamily: 'Product Sans', fontSize: 15.0),)
+                        ],
+                      ),
+                    ),
+                    
+                  
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(widget.post.data['content']),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: RaisedButton(
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+                        color:Colors.blue ,
+                          child: Text(
+                            'Rsvp Now !',
+                            style: TextStyle(
+                                fontFamily: 'Product Sans',
+                                fontSize: 20.0,
+                                color: Colors.white),
+                          ),
+                          onPressed: (){
+
+                          },
+                        ),
+                    ),
+                  ],
+                )),
+          ),
+        ],
+      ),
+    );
   }
 }
