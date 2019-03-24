@@ -1,7 +1,7 @@
 import 'package:eventsly/CustomShapeClipper.dart';
 import 'package:flutter/material.dart';
 import 'package:eventsly/Screens/SignUp.dart';
-
+import 'package:eventsly/Screens/GoogleSignIn.dart';
 void main() => runApp(MaterialApp(
       title: 'Eventsly',
       debugShowCheckedModeBanner: false,
@@ -150,7 +150,11 @@ class _HBTState extends State<HBT> {
                       color: Colors.blue,
                       elevation: 4.0,
                       splashColor: Colors.blueGrey,
-                      onPressed: () {},
+                      onPressed: () {
+                         Navigator.push(context, MaterialPageRoute(builder: (context){
+                        return SignInPage();
+                      }));
+                      },
                       shape: new RoundedRectangleBorder(
                           borderRadius: new BorderRadius.only(
                               topRight: Radius.circular(30.0),

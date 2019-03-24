@@ -73,7 +73,7 @@ class _ListPageState extends State<ListPage> {
 
     QuerySnapshot qn = await firestore.collection("posts").getDocuments();
 
-    debugPrint(qn.documents.toString());
+    //debugPrint(qn.documents.toString());
 
     return qn.documents;
   }
@@ -302,7 +302,8 @@ class _DetailPageState extends State<DetailPage> {
                   
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Text(widget.post.data['content']),
+                      child: Text(widget.post.data['content'],
+                      style: TextStyle(),),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
