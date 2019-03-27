@@ -2,12 +2,14 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:eventsly/Screens/TestFirebase.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 final GoogleSignIn _googleSignIn = GoogleSignIn();
 
 class SignInPage extends StatefulWidget {
   final String title = 'Registration';
+  
   @override
   State<StatefulWidget> createState() => SignInPageState();
 }
@@ -45,9 +47,7 @@ class SignInPageState extends State<SignInPage> {
         return ListView(
           scrollDirection: Axis.vertical,
           children: <Widget>[
- 
             _GoogleSignInSection(),
-           
           ],
         );
       }),
@@ -60,8 +60,6 @@ class SignInPageState extends State<SignInPage> {
   }
 }
 
-
-
 class _GoogleSignInSection extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _GoogleSignInSectionState();
@@ -73,6 +71,11 @@ class _GoogleSignInSectionState extends State<_GoogleSignInSection> {
   String _email;
   String _name;
   String _ppic;
+
+  user(){
+    this._email;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -88,6 +91,11 @@ class _GoogleSignInSectionState extends State<_GoogleSignInSection> {
           child: RaisedButton(
             onPressed: () async {
               _signInWithGoogle();
+               Navigator.push(context,
+                            MaterialPageRoute(builder: (context) =>
+                        HomeTest(),
+                      
+                        ));
             },
             child: const Text('Sign in with Google'),
           ),
@@ -99,11 +107,17 @@ class _GoogleSignInSectionState extends State<_GoogleSignInSection> {
             _success == null
                 ? ''
                 : (_success
-                    ? 'Successfully signed in, uid: ' + _userID + _email + _name + _ppic
+                    ? 'Successfully signed in, uid: ' +
+                        _userID +
+                        _email +
+                        _name +
+                        _ppic
                     : 'Sign in failed'),
             style: TextStyle(color: Colors.red),
           ),
+          
         )
+        
       ],
     );
   }
@@ -129,17 +143,13 @@ class _GoogleSignInSectionState extends State<_GoogleSignInSection> {
       if (user != null) {
         _success = true;
         _userID = user.uid;
-        _email =user.email;
-        _name =user.displayName;
+        _email = user.email;
+        _name = user.displayName;
         _ppic = user.photoUrl;
-       
         
       } else {
         _success = false;
       }
     });
   }
-
-
-  
 }

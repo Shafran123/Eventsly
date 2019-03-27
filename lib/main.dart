@@ -2,12 +2,21 @@ import 'package:eventsly/CustomShapeClipper.dart';
 import 'package:flutter/material.dart';
 import 'package:eventsly/Screens/SignUp.dart';
 import 'package:eventsly/Screens/GoogleSignIn.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:eventsly/Screens/TestFirebase.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+
 void main() => runApp(MaterialApp(
       title: 'Eventsly',
       debugShowCheckedModeBanner: false,
       home: HomeScreen(),
     ));
 
+final FirebaseAuth _auth = FirebaseAuth.instance;
+final GoogleSignIn _googleSignIn = GoogleSignIn();
+
+String data;
 Color firstColor = Color(0xFF185BB5);
 Color secondColor = Color(0xFF092A56);
 
@@ -121,7 +130,6 @@ var homeScreenBottomPart = Column(
         ),
       ),
     ),
-  
   ],
 );
 
@@ -131,15 +139,50 @@ class HBT extends StatefulWidget {
 }
 
 class _HBTState extends State<HBT> {
+  bool _success;
+  String _userID;
+  String _email;
+  String _name;
+  String _ppic;
+
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: <Widget>[
+        Center(
+            child: SizedBox(
+              width: 200.0,
+           child: RaisedButton(
+             color: Colors.white,
+             child: Row(
+               
+               mainAxisAlignment: MainAxisAlignment.center,
+               children: <Widget>[
+                 Image.asset('images/google.png',width: 20.0,),
+                 Text("  "),
+                 Text("Login with google",textAlign: TextAlign.center,)
+               ],
+               
+             ),
+             
+             onPressed: () async
+             {
+                  _signInWithGoogle();
+               Navigator.push(context,
+                            MaterialPageRoute(builder: (context) =>
+                        HomeTest(),
+                      
+                        ));
+             },
+             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+           ),
+            )
+          ),
         Container(
           child: Row(
             children: <Widget>[
               Padding(
-                padding: const EdgeInsets.only(top: 20.0),
+                padding: const EdgeInsets.only(top: 40.0),
                 child: SizedBox(
                   width: 200.0,
                   child: RaisedButton(
@@ -151,9 +194,10 @@ class _HBTState extends State<HBT> {
                       elevation: 4.0,
                       splashColor: Colors.blueGrey,
                       onPressed: () {
-                         Navigator.push(context, MaterialPageRoute(builder: (context){
-                        return SignInPage();
-                      }));
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                          return SignInPage();
+                        }));
                       },
                       shape: new RoundedRectangleBorder(
                           borderRadius: new BorderRadius.only(
@@ -168,11 +212,11 @@ class _HBTState extends State<HBT> {
           child: Row(
             children: <Widget>[
               Padding(
-                padding: const EdgeInsets.only(left: 175.0 , top: 80.0),
+                padding: const EdgeInsets.only(left: 175.0, top: 80.0),
                 child: SizedBox(
                   width: 200.0,
                   child: RaisedButton(
-                      child: const Text(
+                    child: const Text(
                       'Sign Up!',
                       style: TextStyle(color: Colors.white),
                     ),
@@ -181,7 +225,8 @@ class _HBTState extends State<HBT> {
                     splashColor: Colors.blueGrey,
                     onPressed: () {
                       // Perform some action
-                      Navigator.push(context, MaterialPageRoute(builder: (context){
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) {
                         return SignUp();
                       }));
                     },
@@ -189,18 +234,16 @@ class _HBTState extends State<HBT> {
                         borderRadius: new BorderRadius.only(
                             topLeft: Radius.circular(30.0),
                             bottomLeft: Radius.circular(30.0))),
-
                   ),
                 ),
               )
             ],
           ),
         ),
-        
         Container(
           child: Center(
             child: Padding(
-              padding: const EdgeInsets.only(top: 160.0 , left: 135.0),
+              padding: const EdgeInsets.only(top: 160.0, left: 135.0),
               child: Row(
                 children: <Widget>[
                   Text(
@@ -214,5 +257,36 @@ class _HBTState extends State<HBT> {
         )
       ],
     );
+  }
+
+  // Example code of how to sign in with google.
+  void _signInWithGoogle() async {
+    final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
+    final GoogleSignInAuthentication googleAuth =
+        await googleUser.authentication;
+    final AuthCredential credential = GoogleAuthProvider.getCredential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
+    final FirebaseUser user = await _auth.signInWithCredential(credential);
+    assert(user.email != null);
+    assert(user.displayName != null);
+    assert(!user.isAnonymous);
+    assert(await user.getIdToken() != null);
+
+    final FirebaseUser currentUser = await _auth.currentUser();
+    assert(user.uid == currentUser.uid);
+    setState(() {
+      if (user != null) {
+        _success = true;
+        _userID = user.uid;
+        _email = user.email;
+        _name = user.displayName;
+        _ppic = user.photoUrl;
+        return _userID;
+      } else {
+        _success = false;
+      }
+    });
   }
 }
