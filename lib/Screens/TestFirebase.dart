@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:eventsly/Screens/GoogleSignIn.dart';
 import 'package:eventsly/main.dart';
+import 'package:eventsly/Screens/Page2.dart';
 
 void main() => runApp(HomeTest());
 
@@ -12,7 +13,13 @@ void main() => runApp(HomeTest());
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 final GoogleSignIn _googleSignIn = GoogleSignIn();
-
+var check = Firestore.instance
+    .collection('testreg')
+    .where('eventId', isEqualTo: 'FMCcHhEIUZWjXK25QIAk')
+    .snapshots()
+    .listen((data1) => print(' ${data1.documents[0]}'));
+bool isloadedDone = false;
+Color color = Colors.blue;
 String uname1;
 
 class HomeTest extends StatelessWidget {
@@ -41,11 +48,35 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  PageController _pageController;
+  int _page = 0;
+  int _bottomNavIndex = 0;
+  int index = 1;
+
   @override
   void initState() {
     super.initState();
+    _pageController = new PageController();
     //hello();
-  
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _pageController.dispose();
+  }
+
+  void navigationTapped(int page) {
+    // Animating to the page.
+    // You can use whatever duration and curve you like
+    _pageController.animateToPage(page,
+        duration: const Duration(milliseconds: 300), curve: Curves.ease);
+  }
+
+  void onPageChanged(int page) {
+    setState(() {
+      this._page = page;
+    });
   }
 
   @override
@@ -60,7 +91,7 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: 0,
+        currentIndex: _page,
         items: [
           BottomNavigationBarItem(
               icon: Icon(Icons.calendar_today), title: Text("Up Coming")),
@@ -69,7 +100,9 @@ class _HomePageState extends State<HomePage> {
           BottomNavigationBarItem(
               icon: Icon(Icons.collections_bookmark), title: Text("Went"))
         ],
+        onTap: navigationTapped,
       ),
+
       appBar: AppBar(
         title: Text(widget.title),
         actions: <Widget>[
@@ -97,8 +130,8 @@ class _HomePageState extends State<HomePage> {
           )
         ],
       ),
-      drawer: Drawer(
 
+      drawer: Drawer(
           elevation: 20.0,
           child: ListView(
             padding: EdgeInsets.zero,
@@ -112,7 +145,15 @@ class _HomePageState extends State<HomePage> {
               ),
             ],
           )),
-      body: ListPage(),
+      body: new PageView(
+        children: [
+          ListPage(),
+          Page2(),
+        ],
+        onPageChanged: onPageChanged,
+        controller: _pageController,
+      ),
+
       //InfoPage(),
     );
   }
@@ -132,11 +173,11 @@ class _ListPageState extends State<ListPage> {
   Future _data;
   signInGoogle() async {
     final FirebaseUser currentUser = await _auth.currentUser();
-  // String uname = currentUser.displayName;
-   // debugPrint(uname);
+    // String uname = currentUser.displayName;
+    // debugPrint(uname);
     //uname=uname1;
     //debugPrint(uname1);
-   // return (uname);
+    // return (uname);
   }
 
   Future getPosts() async {
@@ -390,18 +431,32 @@ class _DetailPageState extends State<DetailPage> {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: RaisedButton(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20.0)),
-                        color: Colors.blue,
-                        child: Text(
-                          'Rsvp Now !',
-                          style: TextStyle(
-                              fontFamily: 'Product Sans',
-                              fontSize: 20.0,
-                              color: Colors.white),
-                        ),
-                        onPressed: () {},
-                      ),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20.0)),
+                          color: color,
+                          child: Text(
+                            'Rsvp Now !',
+                            style: TextStyle(
+                                fontFamily: 'Product Sans',
+                                fontSize: 20.0,
+                                color: Colors.white),
+                          ),
+                          onPressed: () {
+                            if (isloadedDone == true) {
+                              return null;
+                            } else {
+                              debugPrint(' $check');
+                              debugPrint(widget.post.documentID);
+                              String eventCoverImage =
+                                  widget.post.data['cover_img'];
+                              String docId = widget.post.documentID;
+                              String eventName = widget.post.data['title'];
+                              String eventDate = widget.post.data['Date'];
+                              rsvp(
+                                  docId, eventName, eventCoverImage, eventDate);
+                              //rsvp(null, null, null, null);
+                            }
+                          }),
                     ),
                   ],
                 )),
@@ -409,5 +464,47 @@ class _DetailPageState extends State<DetailPage> {
         ],
       ),
     );
+  }
+}
+
+class curdMethod {
+  bool isLoggedIn() {
+    if (FirebaseAuth.instance.currentUser() != null) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+}
+
+bool _isdisable = false;
+void disablebutton() {
+  _isdisable = true;
+}
+
+Future<Null> rsvp(docId, eventName, eventCoverImage, eventDate) async {
+  //int counter = 0;
+  final FirebaseUser currentUser = await _auth.currentUser();
+  if (FirebaseAuth.instance.currentUser() != null) {
+    String uid = currentUser.uid;
+    String userName = currentUser.displayName;
+    String email = currentUser.email;
+    debugPrint(docId);
+    debugPrint(eventName);
+
+    Firestore.instance.collection('testreg').add({
+      '_isInvited': '',
+      'eventId': '$docId',
+      'eventName': '$eventName',
+      'eventCoverImage': '$eventCoverImage',
+      'eventDate': '$eventDate',
+      'user_id': '$uid',
+      'user_name': '$userName',
+      'email': '$email'
+    }).then((_) {
+      print('Loading..... x $isloadedDone');
+      isloadedDone = true;
+      color = Colors.grey;
+    });
   }
 }
