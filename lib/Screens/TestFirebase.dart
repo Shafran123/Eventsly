@@ -450,10 +450,10 @@ class _DetailPageState extends State<DetailPage> {
                               String eventCoverImage =
                                   widget.post.data['cover_img'];
                               String docId = widget.post.documentID;
+                              String img = widget.post.data['img'];
                               String eventName = widget.post.data['title'];
                               String eventDate = widget.post.data['Date'];
-                              rsvp(
-                                  docId, eventName, eventCoverImage, eventDate);
+                              rsvp(docId, eventName, eventCoverImage, eventDate, img);
                               //rsvp(null, null, null, null);
                             }
                           }),
@@ -482,7 +482,7 @@ void disablebutton() {
   _isdisable = true;
 }
 
-Future<Null> rsvp(docId, eventName, eventCoverImage, eventDate) async {
+Future<Null> rsvp(docId, eventName, eventCoverImage, eventDate, img) async {
   //int counter = 0;
   final FirebaseUser currentUser = await _auth.currentUser();
   if (FirebaseAuth.instance.currentUser() != null) {
@@ -494,6 +494,7 @@ Future<Null> rsvp(docId, eventName, eventCoverImage, eventDate) async {
 
     Firestore.instance.collection('testreg').add({
       '_isInvited': '',
+      '_img' : '$img',
       'eventId': '$docId',
       'eventName': '$eventName',
       'eventCoverImage': '$eventCoverImage',
