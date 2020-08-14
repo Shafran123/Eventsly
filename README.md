@@ -1,6 +1,6 @@
-# eventsly
+# Eventsly
 
-A new Flutter project.
+Event Management Platform.
 
 ## Getting Started
 
